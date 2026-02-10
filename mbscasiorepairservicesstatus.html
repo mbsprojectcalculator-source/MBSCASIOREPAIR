@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semak Status Pembaikan | MBS</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-color: #004085;
+        --accent-color: #007bff;
+        --success-color: #28a745;
+        --pending-color: #ffc107;
+        --bg-color: #f8f9fa;
+    }
+
+    body {
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--bg-color);
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .status-card {
+        width: 90%;
+        max-width: 450px;
+        background: white;
+        padding: 40px 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+
+    .logo-area i {
+        font-size: 50px;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+    }
+
+    h2 {
+        color: var(--primary-color);
+        margin-bottom: 5px;
+        font-size: 24px;
+    }
+
+    p.subtitle {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 30px;
+    }
+
+    /* Input Styling */
+    .search-box {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #eee;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: 0.3s;
+        box-sizing: border-box;
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    input[type="text"]:focus {
+        border-color: var(--accent-color);
+        outline: none;
+        box-shadow: 0 0 10px rgba(0,123,255,0.1);
+    }
+
+    button {
+        width: 100%;
+        padding: 15px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: var(--accent-color);
+        transform: translateY(-2px);
+    }
+
+    button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+
+    /* Result Area */
+    #resultArea {
+        display: none;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 2px dashed #eee;
+        text-align: left;
+    }
+
+    .result-item {
+        margin-bottom: 15px;
+    }
+
+    .label {
+        font-size: 12px;
+        color: #888;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    .value {
+        font-size: 18px;
+        color: #333;
+        font-weight: 600;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-ready { background: #d4edda; color: #155724; }
+
+    .error-msg {
+        color: #dc3545;
+        margin-top: 15px;
+        font-size: 14px;
+        display: none;
+    }
+</style>
+</head>
+<body>
+
+<div class="status-card">
+    <div class="logo-area">
+        <i class="fas fa-calculator"></i>
+    </div>
+    <h2>Semak Status</h2>
+    <p class="subtitle">Sila masukkan No. RSF anda (Rujukan Pembaikan)</p>
+
+    <div class="search-box">
+        <input type="text" id="customerRSF" placeholder="RSFXXXXXX" autocomplete="off">
+    </div>
+    
+    <button onclick="checkStatus()" id="checkBtn">SEMAK SEKARANG</button>
+    
+    <p id="errorMsg" class="error-msg">⚠️ No. RSF tidak dijumpai. Sila cuba lagi.</p>
+
+    <div id="resultArea">
+        <div class="result-item">
+            <div class="label">No. RSF</div>
+            <div class="value" id="resID">-</div>
+        </div>
+        <div class="result-item">
+            <div class="label">Model Kalkulator</div>
+            <div class="value" id="resModel">-</div>
+        </div>
+        <div class="result-item">
+            <div class="label">Status Semasa</div>
+            <div id="resStatus" class="status-badge">SILA TUNGGU</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbxSQILLf9u9Jt8-wwVZwdiyk9z0v3NTQBIxjA6CVjgj_B9hw3wW-ccbvvIfFeU1y1Nrqw/exec";
+
+function checkStatus() {
+    const rsfInput = document.getElementById("customerRSF").value.trim();
+    const btn = document.getElementById("checkBtn");
+    const resultArea = document.getElementById("resultArea");
+    const errorMsg = document.getElementById("errorMsg");
+
+    if (!rsfInput) {
+        alert("Sila masukkan No. RSF");
+        return;
+    }
+
+    // Reset UI
+    btn.disabled = true;
+    btn.innerText = "Sedang Menyemak...";
+    resultArea.style.display = "none";
+    errorMsg.style.display = "none";
+
+    fetch(`${scriptURL}?id=${encodeURIComponent(rsfInput)}`)
+    .then(res => res.json())
+    .then(data => {
+        if (data.result === "not_found") {
+            errorMsg.style.display = "block";
+        } else {
+            // Paparkan Data
+            document.getElementById("resID").innerText = data.id;
+            document.getElementById("resModel").innerText = data.model;
+            
+            const statusEl = document.getElementById("resStatus");
+            statusEl.innerText = data.status;
+            
+            // Tukar warna badge ikut status
+            if(data.status.toUpperCase() === "PENDING" || data.status.toUpperCase() === "DALAM PROSES") {
+                statusEl.className = "status-badge status-pending";
+            } else {
+                statusEl.className = "status-badge status-ready";
+            }
+
+            resultArea.style.display = "block";
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Ralat sistem. Sila cuba sebentar lagi.");
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerText = "SEMAK SEKARANG";
+    });
+}
+</script>
+
+</body>
+</html>
