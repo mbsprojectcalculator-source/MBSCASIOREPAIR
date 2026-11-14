@@ -7,182 +7,304 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
 <style>
-    :root {
-        --primary-color: #004085;
-        --accent-color: #007bff;
-        --success-color: #28a745;
-        --pending-color: #ffc107;
-        --bg-color: #f8f9fa;
-    }
+:root {
+    --primary: #004085;
+    --accent: #007bff;
+    --success: #28a745;
+    --warning: #ffc107;
+    --bg: #f4f7fb;
+}
 
-    body {
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        background-color: var(--bg-color);
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-    }
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
 
-    .status-card {
-        width: 90%;
-        max-width: 450px;
-        background: white;
-        padding: 40px 30px;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        text-align: center;
-    }
+.status-card {
+    width: 100%;
+    max-width: 500px;
+    background: #fff;
+    padding: 36px 28px;
+    border-radius: 20px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
 
-    .logo-area i {
-        font-size: 50px;
-        color: var(--primary-color);
-        margin-bottom: 15px;
-    }
+.logo-area i {
+    font-size: 46px;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
 
-    h2 {
-        color: var(--primary-color);
-        margin-bottom: 5px;
-        font-size: 24px;
-    }
+h2 {
+    color: var(--primary);
+    margin: 0 0 6px 0;
+    font-size: 24px;
+}
 
-    p.subtitle {
-        color: #6c757d;
-        font-size: 14px;
-        margin-bottom: 30px;
-    }
+p.subtitle {
+    color: #6c757d;
+    font-size: 14px;
+    margin: 0 0 24px 0;
+}
 
-    /* Input Styling */
-    .search-box {
-        position: relative;
-        margin-bottom: 20px;
-    }
+.search-box { margin-bottom: 14px; }
 
-    input[type="text"] {
-        width: 100%;
-        padding: 15px 20px;
-        border: 2px solid #eee;
-        border-radius: 12px;
-        font-size: 16px;
-        transition: 0.3s;
-        box-sizing: border-box;
-        text-align: center;
-        text-transform: uppercase;
-        font-weight: bold;
-        letter-spacing: 1px;
-    }
+input[type="text"] {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: 0.2s;
+    box-sizing: border-box;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
 
-    input[type="text"]:focus {
-        border-color: var(--accent-color);
-        outline: none;
-        box-shadow: 0 0 10px rgba(0,123,255,0.1);
-    }
+input[type="text"]:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+}
 
-    button {
-        width: 100%;
-        padding: 15px;
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.3s;
-    }
+button.btn-check {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-    button:hover {
-        background: var(--accent-color);
-        transform: translateY(-2px);
-    }
+button.btn-check:hover { background: var(--accent); }
+button.btn-check:disabled { background: #adb5bd; cursor: not-allowed; }
 
-    button:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-    }
+.error-msg {
+    color: #dc3545;
+    margin-top: 14px;
+    font-size: 14px;
+    display: none;
+    background: #fff5f5;
+    padding: 10px;
+    border-radius: 8px;
+}
 
-    /* Result Area */
-    #resultArea {
-        display: none;
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 2px dashed #eee;
-        text-align: left;
-    }
+#resultArea {
+    display: none;
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 2px dashed #e2e8f0;
+    text-align: left;
+}
 
-    .result-item {
-        margin-bottom: 15px;
-    }
+/* Progress Stepper */
+.stepper {
+    margin: 18px 0 22px 0;
+    position: relative;
+}
 
-    .label {
-        font-size: 12px;
-        color: #888;
-        text-transform: uppercase;
-        font-weight: bold;
-    }
+.step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+    position: relative;
+}
 
-    .value {
-        font-size: 18px;
-        color: #333;
-        font-weight: 600;
-    }
+.step:last-child { margin-bottom: 0; }
 
-    .status-badge {
-        display: inline-block;
-        padding: 5px 15px;
-        border-radius: 20px;
-        font-size: 14px;
-        font-weight: bold;
-        margin-top: 5px;
-    }
+.step-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    z-index: 1;
+}
 
-    .status-pending { background: #fff3cd; color: #856404; }
-    .status-ready { background: #d4edda; color: #155724; }
+.step.done .step-dot { background: var(--success); color: #fff; }
+.step.active .step-dot { background: var(--accent); color: #fff; box-shadow: 0 0 0 4px rgba(0,123,255,0.2); }
 
-    .error-msg {
-        color: #dc3545;
-        margin-top: 15px;
-        font-size: 14px;
-        display: none;
-    }
+.step-text { font-size: 13px; color: #adb5bd; padding-top: 2px; }
+.step.done .step-text { color: #212529; font-weight: 600; }
+.step.active .step-text { color: var(--primary); font-weight: 700; }
+.step-sub { display: block; font-size: 11px; font-weight: 400; color: #6c757d; }
+
+/* Info Grid */
+.info-grid {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 13px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #edf2f7;
+    gap: 10px;
+}
+
+.info-row:last-child { border-bottom: none; }
+.info-label { color: #64748b; font-weight: 600; }
+.info-val { color: #1e293b; font-weight: 700; text-align: right; }
+
+.status-banner {
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.banner-pending { background: #fff3cd; color: #856404; }
+.banner-transit { background: #cfe2ff; color: #084298; }
+.banner-ready { background: #d4edda; color: #155724; }
+
+.btn-wa-branch {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    padding: 12px;
+    background: #25D366;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+}
+.btn-wa-branch:hover { background: #1ebe57; }
 </style>
 </head>
+
 <body>
 
 <div class="status-card">
     <div class="logo-area">
         <i class="fas fa-calculator"></i>
     </div>
-    <h2>Semak Status</h2>
-    <p class="subtitle">Sila masukkan No. RSF anda (Rujukan Pembaikan)</p>
+    <h2>Semak Status Pembaikan</h2>
+    <p class="subtitle">Masukkan No. RSF anda (cth: RSF0000001 atau 1)</p>
 
     <div class="search-box">
-        <input type="text" id="customerRSF" placeholder="RSFXXXXXX" autocomplete="off">
+        <input type="text" id="customerRSF" placeholder="RSF0000001" autocomplete="off">
     </div>
-    
-    <button onclick="checkStatus()" id="checkBtn">SEMAK SEKARANG</button>
-    
-    <p id="errorMsg" class="error-msg">⚠️ No. RSF tidak dijumpai. Sila cuba lagi.</p>
+
+    <button onclick="checkStatus()" id="checkBtn" class="btn-check">SEMAK SEKARANG</button>
+
+    <p id="errorMsg" class="error-msg">⚠️ No. RSF tidak dijumpai. Sila semak semula nombor pada resit anda.</p>
 
     <div id="resultArea">
-        <div class="result-item">
-            <div class="label">No. RSF</div>
-            <div class="value" id="resID">-</div>
+        <div id="statusBanner" class="status-banner">-</div>
+
+        <div class="stepper" id="stepper"></div>
+
+        <div class="info-grid">
+            <div class="info-row">
+                <span class="info-label">No. Rujukan</span>
+                <span class="info-val" id="resID">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Nama Pelanggan</span>
+                <span class="info-val" id="resName">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Model</span>
+                <span class="info-val" id="resModel">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Cawangan</span>
+                <span class="info-val" id="resBranch">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Tarikh Hantar</span>
+                <span class="info-val" id="resDate">-</span>
+            </div>
         </div>
-        <div class="result-item">
-            <div class="label">Model Kalkulator</div>
-            <div class="value" id="resModel">-</div>
-        </div>
-        <div class="result-item">
-            <div class="label">Status Semasa</div>
-            <div id="resStatus" class="status-badge">SILA TUNGGU</div>
-        </div>
+
+        <a id="waBranchBtn" class="btn-wa-branch" href="#" target="_blank" style="display:none;">
+            <i class="fab fa-whatsapp"></i> Hubungi Cawangan via WhatsApp
+        </a>
     </div>
 </div>
 
 <script>
 const scriptURL = "https://script.google.com/macros/s/AKfycbxSQILLf9u9Jt8-wwVZwdiyk9z0v3NTQBIxjA6CVjgj_B9hw3wW-ccbvvIfFeU1y1Nrqw/exec";
+
+// Masukkan nombor WhatsApp setiap cawangan di sini (Format: 601xxxxxxxx)
+const BRANCH_CONTACTS = {
+    "MBS WORLD": "",
+    "MBS MENTAKAB": "",
+    "MBS LIPIS": "",
+    "MBS TRIANG": "",
+    "MBS ROMPIN": "",
+    "SEGAMAT": ""
+};
+
+const STEPS = [
+    { key: "PENDING", label: "Diterima di Cawangan", sub: "Menunggu penghantaran ke pusat servis" },
+    { key: "IN TRANSIT KE CASIO SERVICES CENTER", label: "Di Pusat Servis Casio", sub: "Sedang diperiksa / dibaiki oleh pihak Casio" },
+    { key: "IN TRANSIT KE CAWANGAN", label: "Dalam Perjalanan Pulang", sub: "Sedang dihantar semula ke cawangan MBS" },
+    { key: "READY UNTUK DIAMBIL", label: "Sedia Untuk Diambil", sub: "Sila bawa resit ke kaunter cawangan" },
+    { key: "COLLECTED", label: "Telah Diambil", sub: "Pembaikan selesai & diserahkan kepada pelanggan" }
+];
+
+function getStepIndex(status) {
+    const s = String(status || "").toUpperCase().trim();
+    const idx = STEPS.findIndex(st => st.key === s);
+    return idx >= 0 ? idx : 0;
+}
+
+function renderStepper(status, hasCN) {
+    const currentIdx = getStepIndex(status);
+    const container = document.getElementById("stepper");
+    let html = "";
+
+    STEPS.forEach((st, i) => {
+        let cls = "";
+        let icon = i + 1;
+        if (i < currentIdx) { cls = "done"; icon = "✓"; }
+        else if (i === currentIdx) { cls = "active"; icon = "•"; }
+
+        let sub = st.sub;
+        if (i === 2 && hasCN) {
+            sub = "Diluluskan Nota Kredit / Gantian oleh Casio";
+        }
+
+        html += `
+            <div class="step ${cls}">
+                <div class="step-dot">${icon}</div>
+                <div class="step-text">
+                    ${st.label}
+                    <span class="step-sub">${sub}</span>
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
 
 function checkStatus() {
     const rsfInput = document.getElementById("customerRSF").value.trim();
@@ -191,48 +313,79 @@ function checkStatus() {
     const errorMsg = document.getElementById("errorMsg");
 
     if (!rsfInput) {
-        alert("Sila masukkan No. RSF");
+        alert("Sila masukkan No. RSF anda.");
         return;
     }
 
-    // Reset UI
     btn.disabled = true;
     btn.innerText = "Sedang Menyemak...";
     resultArea.style.display = "none";
     errorMsg.style.display = "none";
 
-    fetch(`${scriptURL}?id=${encodeURIComponent(rsfInput)}`)
+    fetch(`${scriptURL}?action=status&id=${encodeURIComponent(rsfInput)}`)
     .then(res => res.json())
     .then(data => {
-        if (data.result === "not_found") {
+        if (data.result === "not_found" || data.result === "error") {
             errorMsg.style.display = "block";
-        } else {
-            // Paparkan Data
-            document.getElementById("resID").innerText = data.id;
-            document.getElementById("resModel").innerText = data.model;
-            
-            const statusEl = document.getElementById("resStatus");
-            statusEl.innerText = data.status;
-            
-            // Tukar warna badge ikut status
-            if(data.status.toUpperCase() === "PENDING" || data.status.toUpperCase() === "DALAM PROSES") {
-                statusEl.className = "status-badge status-pending";
-            } else {
-                statusEl.className = "status-badge status-ready";
-            }
-
-            resultArea.style.display = "block";
+            return;
         }
+
+        const statusUpper = String(data.status || "PENDING").toUpperCase();
+        document.getElementById("resID").innerText = data.id;
+        document.getElementById("resName").innerText = data.maskedName || "-";
+        document.getElementById("resModel").innerText = data.model || "-";
+        document.getElementById("resBranch").innerText = data.branch || "-";
+        document.getElementById("resDate").innerText = data.timestamp
+            ? new Date(data.timestamp).toLocaleDateString("ms-MY", { day: "2-digit", month: "short", year: "numeric" })
+            : "-";
+
+        const banner = document.getElementById("statusBanner");
+        banner.innerText = statusUpper;
+        if (statusUpper === "READY UNTUK DIAMBIL" || statusUpper === "COLLECTED") {
+            banner.className = "status-banner banner-ready";
+        } else if (statusUpper.includes("TRANSIT")) {
+            banner.className = "status-banner banner-transit";
+        } else {
+            banner.className = "status-banner banner-pending";
+        }
+
+        renderStepper(statusUpper, data.hasCreditNote);
+
+        // Butang WhatsApp Cawangan jika nombor telah dikonfigurasi
+        const waBtn = document.getElementById("waBranchBtn");
+        const branchPhone = BRANCH_CONTACTS[String(data.branch || "").toUpperCase()];
+        if (branchPhone) {
+            const msg = `Salam MBS ${data.branch}, saya ingin bertanya mengenai status pembaikan Casio [No. RSF: ${data.id}, Model: ${data.model}].`;
+            waBtn.href = `https://wa.me/${branchPhone}?text=${encodeURIComponent(msg)}`;
+            waBtn.style.display = "block";
+        } else {
+            waBtn.style.display = "none";
+        }
+
+        resultArea.style.display = "block";
     })
-    .catch(err => {
-        console.error(err);
-        alert("Ralat sistem. Sila cuba sebentar lagi.");
+    .catch(() => {
+        alert("Ralat rangkaian. Sila cuba sebentar lagi.");
     })
     .finally(() => {
         btn.disabled = false;
         btn.innerText = "SEMAK SEKARANG";
     });
 }
+
+// Auto-semak jika pelanggan imbas QR Code (?id=RSF0000001)
+window.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const idParam = params.get("id");
+    if (idParam) {
+        document.getElementById("customerRSF").value = idParam;
+        checkStatus();
+    }
+
+    document.getElementById("customerRSF").addEventListener("keydown", e => {
+        if (e.key === "Enter") checkStatus();
+    });
+});
 </script>
 
 </body>
