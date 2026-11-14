@@ -322,7 +322,7 @@ tr:hover { background: #f8fafc; }
                 <option value="IN TRANSIT KE CASIO SERVICES CENTER">IN TRANSIT KE CASIO SERVICES CENTER</option>
                 <option value="IN TRANSIT KE CAWANGAN">IN TRANSIT KE CAWANGAN</option>
                 <option value="READY UNTUK DIAMBIL">READY UNTUK DIAMBIL</option>
-                <option value="COLLECTED">COLLECTED</option>
+                <option value="DONE PICKUP">DONE PICKUP</option>
             </select>
             <select id="fAge" onchange="applyFilters()">
                 <option value="">Semua Tempoh</option>
@@ -345,7 +345,7 @@ tr:hover { background: #f8fafc; }
                 <option value="IN TRANSIT KE CASIO SERVICES CENTER">IN TRANSIT KE CASIO SERVICES CENTER</option>
                 <option value="IN TRANSIT KE CAWANGAN">IN TRANSIT KE CAWANGAN</option>
                 <option value="READY UNTUK DIAMBIL">READY UNTUK DIAMBIL</option>
-                <option value="COLLECTED">COLLECTED</option>
+                <option value="DONE PICKUP">DONE PICKUP</option>
             </select>
             <input type="text" id="bAsNo" placeholder="A.S NO (cth: 223520)">
             <input type="date" id="bCollectDate" title="Supplier Collect Date">
@@ -391,7 +391,7 @@ tr:hover { background: #f8fafc; }
             <option value="IN TRANSIT KE CASIO SERVICES CENTER">IN TRANSIT KE CASIO SERVICES CENTER</option>
             <option value="IN TRANSIT KE CAWANGAN">IN TRANSIT KE CAWANGAN</option>
             <option value="READY UNTUK DIAMBIL">READY UNTUK DIAMBIL</option>
-            <option value="COLLECTED">COLLECTED</option>
+            <option value="DONE PICKUP">DONE PICKUP</option>
         </select>
 
         <label>Model</label>
@@ -495,12 +495,17 @@ function populateBranchFilter() {
     if (branches.includes(current)) sel.value = current;
 }
 
+function isCompletedStatus(st) {
+    const s = String(st || "").toUpperCase().trim();
+    return s === "DONE PICKUP" || s === "COLLECTED";
+}
+
 function updateKPIs() {
     let active = 0, ready = 0, warn = 0, crit = 0;
     allRecords.forEach(r => {
         const st = (r.status || "").toUpperCase();
         const age = daysSince(r.timestamp);
-        if (st !== "COLLECTED") {
+        if (!isCompletedStatus(st)) {
             active++;
             if (age > 30) crit++;
             else if (age > 14) warn++;
@@ -536,12 +541,12 @@ function applyFilters(onlyActive = false) {
 
     filteredRecords = allRecords.filter(r => {
         const rStatus = (r.status || "").toUpperCase();
-        if (onlyActive && rStatus === "COLLECTED") return false;
+        if (onlyActive && isCompletedStatus(rStatus)) return false;
         if (br && r.branch.toUpperCase() !== br) return false;
         if (st && rStatus !== st) return false;
 
         const age = daysSince(r.timestamp);
-        if (ageMin > 0 && (rStatus === "COLLECTED" || age <= ageMin)) return false;
+        if (ageMin > 0 && (isCompletedStatus(rStatus) || age <= ageMin)) return false;
 
         if (q) {
             const hay = `${r.id} ${r.name} ${r.phone} ${r.model} ${r.asNo} ${r.creditNote} ${r.issue}`.toLowerCase();
@@ -555,7 +560,7 @@ function applyFilters(onlyActive = false) {
 
 function getStatusBadge(st) {
     const s = (st || "PENDING").toUpperCase();
-    if (s === "COLLECTED") return `<span class="badge b-done">${s}</span>`;
+    if (isCompletedStatus(s)) return `<span class="badge b-done">${s}</span>`;
     if (s === "READY UNTUK DIAMBIL") return `<span class="badge b-ready">${s}</span>`;
     if (s.includes("TRANSIT")) return `<span class="badge b-transit">${s}</span>`;
     return `<span class="badge b-pending">${s}</span>`;
@@ -580,7 +585,7 @@ function renderTable() {
     let html = "";
     filteredRecords.slice(0, 300).forEach(r => {
         const age = daysSince(r.timestamp);
-        const isDone = (r.status || "").toUpperCase() === "COLLECTED";
+        const isDone = isCompletedStatus(r.status);
         let ageBadge = `<span class="age-pill age-ok">${age} hari</span>`;
         if (!isDone && age > 30) ageBadge = `<span class="age-pill age-crit">🚨 ${age} hari</span>`;
         else if (!isDone && age > 14) ageBadge = `<span class="age-pill age-warn">⚠️ ${age} hari</span>`;

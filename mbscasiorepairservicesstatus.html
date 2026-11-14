@@ -268,11 +268,12 @@ const STEPS = [
     { key: "IN TRANSIT KE CASIO SERVICES CENTER", label: "Di Pusat Servis Casio", sub: "Sedang diperiksa / dibaiki oleh pihak Casio" },
     { key: "IN TRANSIT KE CAWANGAN", label: "Dalam Perjalanan Pulang", sub: "Sedang dihantar semula ke cawangan MBS" },
     { key: "READY UNTUK DIAMBIL", label: "Sedia Untuk Diambil", sub: "Sila bawa resit ke kaunter cawangan" },
-    { key: "COLLECTED", label: "Telah Diambil", sub: "Pembaikan selesai & diserahkan kepada pelanggan" }
+    { key: "DONE PICKUP", label: "Selesai Diambil (Done Pickup)", sub: "Pembaikan selesai & diserahkan kepada pelanggan" }
 ];
 
 function getStepIndex(status) {
     const s = String(status || "").toUpperCase().trim();
+    if (s === "COLLECTED" || s === "DONE PICKUP") return 4;
     const idx = STEPS.findIndex(st => st.key === s);
     return idx >= 0 ? idx : 0;
 }
@@ -341,7 +342,7 @@ function checkStatus() {
 
         const banner = document.getElementById("statusBanner");
         banner.innerText = statusUpper;
-        if (statusUpper === "READY UNTUK DIAMBIL" || statusUpper === "COLLECTED") {
+        if (statusUpper === "READY UNTUK DIAMBIL" || statusUpper === "COLLECTED" || statusUpper === "DONE PICKUP") {
             banner.className = "status-banner banner-ready";
         } else if (statusUpper.includes("TRANSIT")) {
             banner.className = "status-banner banner-transit";
